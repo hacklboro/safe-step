@@ -140,11 +140,19 @@ export class StartRoute extends Component {state = { locations : [] }
         }).catch((response) => console.log(response));
   }
 
-  render() {
+  render( props ) {
+
     return (
       <SafeAreaView style={styles.container}>
         <View height={100}> 
           <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Set Destination</Text>
+          
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={() => this.props.navigation.navigate('options')}>
+            <Text style={styles.loginText}>Options</Text>
+          </TouchableOpacity>
+
           <View alignItems={"center"}>
             <DestinationSearch callback={this.updateLocations}/>
           </View>
