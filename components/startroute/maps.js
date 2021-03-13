@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Button, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { getLocation } from "../location-management/location-manager.js"
 import { getNearbyLocations } from "./google_api_wrapper.js";
 import { render } from 'react-dom';
@@ -31,30 +31,64 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get('window').width,
-    height: '100%'
+    height: '100%',
+    zIndex: -1
   },
+  suggestionsContainer: {
+    position: "absolute", 
+    top: 100, 
+    height: "auto", 
+    maxHeight: 250, 
+    width: "80%", 
+    textAlign: "center",
+    zIndex: 1, 
+    backgroundColor: "white",
+    alignSelf: "center",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  locationOption: {
+    color: "black",
+    paddingVertical: 10,
+    fontSize: 18,
+    marginHorizontal: 10,
+  },
+  locationOptionWrapper: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e6e6e6",
+    marginHorizontal: 5
+  }
 });
 
-const DestinationSearch = () => {
+const DestinationSearch = (props) => {
   return (
     <TextInput 
       style={{ marginTop: 20, borderBottomWidth: 2, borderBottomColor: "gray" }}
       placeholder={"Destination"} 
       width={"80%"} 
       onChangeText = {(value) => {
-        getLocation()
-        .then(location => {
-        getNearbyLocations(value, location.coords.latitude, location.coords.longitude)
-        .then((response) =>  {
-            console.log(response);
-        })
-        .catch((response) => console.log(response));
-        }).catch((response) => console.log(response));
+        if (!value) return;  // if value is empty
+        props.callback(value);
       }}
       />
   );
 };
 
+LocationOption = (props) => {
+  return <View >
+    <TouchableOpacity style={styles.locationOptionWrapper}>
+      <Text style={styles.locationOption}>{props.location.name}</Text>
+    </TouchableOpacity>
+  </View>
+}
+
+
+LocationSuggestions = (props) => {
+  const locationsObjs = props.locations.map((location, index) => <LocationOption key={index} location={location} />); 
+
+  return <ScrollView style={styles.suggestionsContainer}>{locationsObjs}</ScrollView>;
+};
+ 
 class Map extends Component {
   render() {
     return(
@@ -68,30 +102,51 @@ class Map extends Component {
     );
   }
 }
-
 class ConfirmButton extends Component {
   render() {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={console.log("Pressed")}>
+              <TouchableOpacity style={styles.button} onPress={() => {console.log("RUNNING BUTTON FUNCTION")}}>
                 <Text>Confirm</Text>
               </TouchableOpacity>
             </View>;
   }
 }
 
-export const startRoute = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <View height={100}> 
-        <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Set Destination</Text>
-        <View alignItems={"center"}>
-          <DestinationSearch />
+export class StartRoute extends Component {state = { locations : [] }
+
+  constructor(props) {
+    super(props);
+    this.updateLocations = this.updateLocations.bind(this);
+  }
+
+  updateLocations(value) {
+    getLocation()
+        .then(location => {
+        getNearbyLocations(value, location.coords.latitude, location.coords.longitude)
+        .then((response) =>  {
+          this.setState({
+            locations: response.results
+          });
+        })
+        .catch((response) => console.log(response));
+        }).catch((response) => console.log(response));
+  }
+
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View height={100}> 
+          <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Set Destination</Text>
+          <View alignItems={"center"}>
+            <DestinationSearch callback={this.updateLocations}/>
+          </View>
         </View>
-      </View>
-      <Map />
-      <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
-        <ConfirmButton/>
-      </View>
-    </SafeAreaView>
-    );
-};
+        <LocationSuggestions locations={this.state.locations}/>
+        <Map />
+        <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
+          <ConfirmButton/>
+        </View>
+      </SafeAreaView>
+      );
+  }
+}
