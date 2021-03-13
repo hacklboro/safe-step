@@ -19,7 +19,7 @@ import Svg, {
 } from "react-native-svg";
 import * as Animatable from "react-native-animatable";
 
-const Login = () => {
+function Login() {
   // const navigation = useNavigation();
 
   return (
@@ -275,6 +275,18 @@ const Login = () => {
   );
 };
 
+
+function Sign_Up() {
+  return (
+    <View style={styles.Login}>
+      <Text style={styles.logo}>SafeSteps</Text>
+
+
+      
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   Login: {
     flex: 1,
@@ -362,4 +374,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Sign_Up;
