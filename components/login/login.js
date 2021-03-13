@@ -21,6 +21,7 @@ import Svg, {
   Image,
 } from "react-native-svg";
 import { styles } from "./style.js" 
+import {StartRoute} from '../startroute/maps.js'
 
 export function Login( props ) {
 
