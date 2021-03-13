@@ -29,6 +29,7 @@ export const getNearbyLocations = (query, long, lang, radius=10000) => {
                 // The request has been completed successfully
                 return resolve(JSON.parse(xhr.responseText));
               } else {
+                return reject(JSON.parse(xhr.responseText));
                 // Oh no! There has been an error with the request!
               }
             }

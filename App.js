@@ -5,7 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Component } from "react";
 import { Login, Sign_Up } from "./components/login/login.js"
 import {StartRoute, Map} from "./components/startroute/maps.js";
-import {Options} from "./components/options/options.js"
+import {Options} from "./components/options/options.js";
+import {DuringRoute} from "./components/duringroute/duringroute";
 
 const Stack = createStackNavigator(
 
@@ -19,6 +20,7 @@ function App() {
         <Stack.Screen name="signUp" component={Sign_Up} options={{ title: 'Sign Up' }} />
         <Stack.Screen name="routes" component={StartRoute} options={{ title: 'Routes' }} />
         <Stack.Screen name="options" component={Options} options={{ title: 'Options' }} />
+        <Stack.Screen name="duringroute" component={DuringRoute} options={{ title: 'During Route' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

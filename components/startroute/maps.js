@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Button, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { getLocation } from "../location-management/location-manager.js"
 import { getNearbyLocations } from "./google_api_wrapper.js";
@@ -74,30 +74,48 @@ const DestinationSearch = (props) => {
   );
 };
 
-LocationOption = (props) => {
+const LocationOption = (props) => {
+  const selectLocation = () => {
+    const loc = props.location.geometry.location;
+
+    props.callback(loc.lat, loc.lng);  // call the callback that will add a pin to the map
+  };
+
   return <View >
-    <TouchableOpacity style={styles.locationOptionWrapper}>
+    <TouchableOpacity style={styles.locationOptionWrapper} onPress={() => {props.callback(selectLocation())}}>
       <Text style={styles.locationOption}>{props.location.name}</Text>
     </TouchableOpacity>
   </View>
 }
 
 
-LocationSuggestions = (props) => {
-  const locationsObjs = props.locations.map((location, index) => <LocationOption key={index} location={location} />); 
+const LocationSuggestions = (props) => {
+  const locationsObjs = props.locations.map((location, index) => <LocationOption key={index} location={location} callback={props.callback}/>); 
 
   return <ScrollView style={styles.suggestionsContainer}>{locationsObjs}</ScrollView>;
 };
+class Map extends Component { state = { mapPins: [] }
 
-onConfirm = () => {
-  return(
-    <View>
-      {console.log("RUNNING BUTTON FUNCTION")}
-    </View>
-  )
-}
- 
-class Map extends Component {
+  constructor(props) {
+    super(props);
+    this.addPin = this.addPin.bind(this);
+  }
+
+  addPin(lat, long) {
+    if (lat && long) {  // to stop some undefined calls
+      this.state.mapPins = [[lat, long]];
+      this.forceUpdate();
+    } 
+  };
+
+  getPin() {
+    return this.state.mapPins;  // return the pins on the map
+  }
+
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+  
   render() {
     return(
       <View style={styles.container}>
@@ -105,27 +123,56 @@ class Map extends Component {
           showsUserLocation={true}
           showsMyLocationButton={false}   
           followsUserLocation={false} 
-          /> 
+          >
+            {this.state.mapPins.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{latitude : marker[0] , longitude : marker[1] }}
+            />
+          ))}
+          </MapView>
       </View> 
     );
   }
-}
+};
+
 class ConfirmButton extends Component {
-  render() {
+  confirm = (navigator) => {
+    let _destination = this.props.getDestinationCallback();
+    if (_destination.length == 0) {
+      alert("You need to select a destination");
+      return;
+    }
+    getLocation().then(location => {
+      navigator.navigate("duringroute", {destination: _destination[0], origin: [location.coords.longitude, location.coords.latitude]});
+    }).catch(()=> alert("App does not have access to location"));
+    
+  };
+
+  render( props ) {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={onConfirm}>
+              <TouchableOpacity style={styles.button} onPress={() => this.confirm(this.props.navigation)}>
                 <Text>Confirm</Text>
               </TouchableOpacity>
             </View>;
   }
 }
 
-export class StartRoute extends Component {state = { locations : [] }
+export class StartRoute extends Component {state = { locations : [], mapPins: [] }
 
   constructor(props) {
     super(props);
     this.updateLocations = this.updateLocations.bind(this);
+    this.render = this.render.bind(this);
   }
+
+  addPin = (lat, long) => {
+    this.child.addPin(lat, long);
+  }
+
+  getPin = () => {
+    return this.child.getPin();
+  };
 
   updateLocations(value) {
     getLocation()
@@ -141,7 +188,6 @@ export class StartRoute extends Component {state = { locations : [] }
   }
 
   render( props ) {
-
     return (
       <SafeAreaView style={styles.container}>
         <View height={100}> 
@@ -157,10 +203,10 @@ export class StartRoute extends Component {state = { locations : [] }
             <DestinationSearch callback={this.updateLocations}/>
           </View>
         </View>
-        <LocationSuggestions locations={this.state.locations}/>
-        <Map />
+        <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins}/>
+        <LocationSuggestions locations={this.state.locations} callback={this.addPin}/>
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
-          <ConfirmButton/>
+          <ConfirmButton {...this.props} getDestinationCallback={this.getPin}/>
         </View>
       </SafeAreaView>
       );
