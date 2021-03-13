@@ -2,6 +2,7 @@ import { NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
 import React, { Component } from "react";
 import { Login, Sign_Up } from "./components/login/login.js"
+import {StartRoute, Map} from "./components/startroute/maps.js";
 
 const Stack = createStackNavigator();
 
