@@ -222,27 +222,12 @@ function Login( props ) {
 
       <Text style={styles.logo}>SafeSteps</Text>
       <View style={styles.inputView}>
-        {/* <Icon style={styles.searchIcon} name="" size={20} color="#000"/> */}
         <TextInput
           style={styles.innerInput}
           placeholder="Email."
           onChangeText={(email) => setEmail(email)}
           placeholderTextColor="#ddd"
         />
-        {/* <Svg
-      style
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="black"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <Circle cx={12} cy={12} r={4} />
-      <Path d="M16 8v5a3 3 0 006 0v-1a10 10 0 10-3.92 7.94" />
-    </Svg> */}
       </View>
 
       <View>
@@ -281,7 +266,7 @@ function Login( props ) {
 function Sign_Up(props) {
   return (
     <View style={styles.Login}>
-            <Animatable.View
+      <Animatable.View
         animation="pulse"
         duration={8000}
         easing="linear"
