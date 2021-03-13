@@ -16,18 +16,15 @@ export const getLocation = async () => {
     
 };
 
-export const generatePath = () => {
+export const generatePath = (origin, destination) => {
     return new Promise((resolve, reject) => {
-        let url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
+        let url = "https://maps.googleapis.com/maps/api/directions/json?"
     
-        //add query
-        url += "query=" +query.toLowerCase().replace(" ", "+");  // convert to lower case and replace spaces with + symbols
-        
-        // add current position
-        url += "&location="+ long + ","+lang;
+        // add origin
+        url += "origin="+origin.coords.latitude+","+origin.coords.latitude; 
 
-        // add radius of places to list
-        url += "&radius=" + radius;
+        // add destination
+        url += "&destination="+destination[0]+","+destination[1]; 
 
         // add api key
         url += "&key=" +  GOOGLE_KEY;

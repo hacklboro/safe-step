@@ -140,10 +140,13 @@ class ConfirmButton extends Component {
   confirm = (navigator) => {
     let _destination = this.props.getDestinationCallback();
     if (_destination.length == 0) {
-      alert("You need to select a destination!");
+      alert("You need to select a destination");
       return;
     }
-    navigator.navigate("duringroute", {destination: _destination[0]});
+    getLocation().then(location => {
+      navigator.navigate("duringroute", {destination: _destination[0], origin: [location.coords.longitude, location.coords.latitude]});
+    }).catch(()=> alert("App does not have access to location"));
+    
   };
 
   render( props ) {
