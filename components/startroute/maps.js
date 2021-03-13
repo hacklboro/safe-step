@@ -75,8 +75,13 @@ const DestinationSearch = (props) => {
 };
 
 LocationOption = (props) => {
+  const selectLocation = () => {
+    console.log(props.location.geometry.location);
+
+  };
+
   return <View >
-    <TouchableOpacity style={styles.locationOptionWrapper}>
+    <TouchableOpacity style={styles.locationOptionWrapper} onPress={() => {Map.addPin("test")}}>
       <Text style={styles.locationOption}>{props.location.name}</Text>
     </TouchableOpacity>
   </View>
@@ -97,7 +102,26 @@ onConfirm = () => {
   )
 }
  
-class Map extends Component {
+
+class Map extends Component {state = { pins: [] }
+
+  constructor( props ) {
+    super(props);
+    this.addPin = this.addPin.bind(this);
+    this.clearPins = this.clearPins.bind(this);
+  }
+
+  addPin(newPin) {
+    console.log("called");
+    this.state.pins.push(newPin);
+    this.forceUpdate(); // force a refresh to render the new pins
+  };
+
+  clearPins(newPin) {
+    this.state.pins = [];  // reset the pins
+    this.forceUpdate();  // unrender the pins
+  };
+
   render() {
     return(
       <View style={styles.container}>
@@ -109,7 +133,7 @@ class Map extends Component {
       </View> 
     );
   }
-}
+};
 class ConfirmButton extends Component {
   render() {
     return <View style={styles.container}>
