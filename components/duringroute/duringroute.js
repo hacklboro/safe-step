@@ -1,14 +1,11 @@
 import React, { Component, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
-<<<<<<< HEAD
 import { JourneyTime } from './stopwatch.js';
-=======
 import { getLocation, generatePath } from "../location-management/location-manager.js";
 import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_KEY } from '@env'
 import Polyline from "@mapbox/polyline";
->>>>>>> 79103285f48898f83d227cedc3b712bd71fb8333
 
 const styles = StyleSheet.create({
   shadow: {
