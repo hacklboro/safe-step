@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+import { JourneyTime } from './stopwatch.js';
 
 const styles = StyleSheet.create({
   shadow: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    backgroundColor: "#ff6961",
+    backgroundColor: "#7CC0FF",
     padding: 10,
     borderRadius: 15,
   },
@@ -98,8 +99,8 @@ class Map extends Component { state = { mapPins: [] }
 class CancelButton extends Component {
   render() {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={() => console.log("cancel")}>
-                <Text>Cancel</Text>
+              <TouchableOpacity style={styles.button} onPress={() => console.log("Finish  Journey")}>
+                <Text>Finish Journey</Text>
               </TouchableOpacity>
             </View>;
   }
@@ -117,6 +118,8 @@ export class DuringRoute extends Component {state = { route: [], endPoint: []}
     return (
       <SafeAreaView style={styles.container}>
         <View height={100}> 
+        <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Current Journey</Text>
+        <JourneyTime style={styles.container}/>
         </View>
         <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins}/>
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
