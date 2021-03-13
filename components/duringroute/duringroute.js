@@ -1,7 +1,14 @@
 import React, { Component, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+<<<<<<< HEAD
 import { JourneyTime } from './stopwatch.js';
+=======
+import { getLocation, generatePath } from "../location-management/location-manager.js";
+import MapViewDirections from 'react-native-maps-directions';
+import { GOOGLE_KEY } from '@env'
+import Polyline from "@mapbox/polyline";
+>>>>>>> 79103285f48898f83d227cedc3b712bd71fb8333
 
 const styles = StyleSheet.create({
   shadow: {
@@ -58,12 +65,18 @@ const styles = StyleSheet.create({
   }
 });
 
-class Map extends Component { state = { mapPins: [] }
+class Map extends Component { state = { mapPins: [], polyline: [], destination: []}
 
-  constructor(props) {
-    super(props);
+  constructor( props ) {
+    super( props );
     this.addPin = this.addPin.bind(this);
+    this.setLine = this.setLine.bind(this);
+    this.setDestination = this.setDestination.bind(this);
   }
+
+  setDestination(dest) {
+      this.state.destination = dest;
+  };
 
   addPin(lat, long) {
     if (lat && long) {  // to stop some undefined calls
@@ -72,11 +85,20 @@ class Map extends Component { state = { mapPins: [] }
     } 
   };
 
+  setLine(lines) {
+      this.state.polyline = lines;
+      this.forceUpdate();
+  }
+
   componentDidMount() {
     this.props.onRef(this)
   }
   
   render() {
+    let origin = {longitude: this.props.origin[0], latitude: this.props.origin[1]};
+    let destination = {latitude: this.props.destination[0], longitude: this.props.destination[1]};
+    console.log(origin);
+    console.log(destination);
     return(
       <View style={styles.container}>
         <MapView style={styles.map} 
@@ -84,12 +106,11 @@ class Map extends Component { state = { mapPins: [] }
           showsMyLocationButton={false}   
           followsUserLocation={false} 
           >
-            {this.state.mapPins.map((marker, index) => (
-            <Marker
-              key={index}
-              coordinate={{latitude : marker[0] , longitude : marker[1] }}
-            />
-          ))}
+              <MapViewDirections 
+              origin = {origin}
+              destination = {destination}
+              apikey = {GOOGLE_KEY}
+              />
           </MapView>
       </View> 
     );
@@ -106,13 +127,35 @@ class CancelButton extends Component {
   }
 }
 
-export class DuringRoute extends Component {state = { route: [], endPoint: []}
+export class DuringRoute extends Component {state = { route: [], endPoint: [null,  null], origin: [null, null]}
 
   constructor(props) {
     super(props);
     this.state.endPoint = props.route.params.destination;
+    this.state.origin = props.route.params.origin;
     this.render = this.render.bind(this);
+    this.setRoute = this.setRoute.bind(this);
+    
+    let endPoint = this.state.endPoint;
+    getLocation().then(location => {
+        generatePath(location, endPoint).then(path => this.setRoute(path)).catch(error => console.log(error))
+    }).catch(error => alert(error));
   }
+
+  setRoute = ( route )=> {
+      let lines = [];
+      let steps = route.routes[0].legs[0].steps;
+      steps.forEach(step => {
+        lines.push(...Polyline.decode(step.polyline.points));
+      });
+
+      lines.forEach((line, index) => {
+          lines[index] = {longitude: line[0], latitude: line[1]};
+      })
+      
+      this.route = lines;
+      this.child.setLine(this.route);
+  };
 
   render( props ) {
     return (
@@ -121,7 +164,7 @@ export class DuringRoute extends Component {state = { route: [], endPoint: []}
         <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Current Journey</Text>
         <JourneyTime style={styles.container}/>
         </View>
-        <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins}/>
+        <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins} origin={this.state.origin} destination={this.state.endPoint} />
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
           <CancelButton/>
         </View>
