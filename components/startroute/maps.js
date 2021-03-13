@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Button, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { getLocation } from "../location-management/location-manager.js"
 import { getNearbyLocations } from "./google_api_wrapper.js";
@@ -74,54 +74,53 @@ const DestinationSearch = (props) => {
   );
 };
 
-LocationOption = (props) => {
+const LocationOption = (props) => {
   const selectLocation = () => {
-    console.log(props.location.geometry.location);
+    const loc = props.location.geometry.location;
 
+    props.callback(loc.lat, loc.lng);  // call the callback that will add a pin to the map
   };
 
   return <View >
-    <TouchableOpacity style={styles.locationOptionWrapper} onPress={() => {Map.addPin("test")}}>
+    <TouchableOpacity style={styles.locationOptionWrapper} onPress={() => {props.callback(selectLocation())}}>
       <Text style={styles.locationOption}>{props.location.name}</Text>
     </TouchableOpacity>
   </View>
 }
 
 
-LocationSuggestions = (props) => {
-  const locationsObjs = props.locations.map((location, index) => <LocationOption key={index} location={location} />); 
+const LocationSuggestions = (props) => {
+  const locationsObjs = props.locations.map((location, index) => <LocationOption key={index} location={location} callback={props.callback}/>); 
 
   return <ScrollView style={styles.suggestionsContainer}>{locationsObjs}</ScrollView>;
 };
 
-onConfirm = () => {
+const onConfirm = () => {
   return(
     <View>
       {console.log("RUNNING BUTTON FUNCTION")}
     </View>
   )
 }
- 
 
-class Map extends Component {state = { pins: [] }
+class Map extends Component { state = { mapPins: [] }
 
-  constructor( props ) {
+  constructor(props) {
     super(props);
     this.addPin = this.addPin.bind(this);
-    this.clearPins = this.clearPins.bind(this);
   }
 
-  addPin(newPin) {
-    console.log("called");
-    this.state.pins.push(newPin);
-    this.forceUpdate(); // force a refresh to render the new pins
+  addPin(lat, long) {
+    if (lat && long) {  // to stop some undefined calls
+      this.state.mapPins = [[lat, long]];
+      this.forceUpdate();
+    } 
   };
 
-  clearPins(newPin) {
-    this.state.pins = [];  // reset the pins
-    this.forceUpdate();  // unrender the pins
-  };
-
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+  
   render() {
     return(
       <View style={styles.container}>
@@ -129,11 +128,19 @@ class Map extends Component {state = { pins: [] }
           showsUserLocation={true}
           showsMyLocationButton={false}   
           followsUserLocation={false} 
-          /> 
+          >
+            {this.state.mapPins.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{latitude : marker[0] , longitude : marker[1] }}
+            />
+          ))}
+          </MapView>
       </View> 
     );
   }
 };
+
 class ConfirmButton extends Component {
   render() {
     return <View style={styles.container}>
@@ -144,11 +151,16 @@ class ConfirmButton extends Component {
   }
 }
 
-export class StartRoute extends Component {state = { locations : [] }
+export class StartRoute extends Component {state = { locations : [], mapPins: [] }
 
   constructor(props) {
     super(props);
     this.updateLocations = this.updateLocations.bind(this);
+    this.render = this.render.bind(this);
+  }
+
+  addPin = (lat, long) => {
+    this.child.addPin(lat, long);
   }
 
   updateLocations(value) {
@@ -165,7 +177,6 @@ export class StartRoute extends Component {state = { locations : [] }
   }
 
   render( props ) {
-
     return (
       <SafeAreaView style={styles.container}>
         <View height={100}> 
@@ -181,8 +192,8 @@ export class StartRoute extends Component {state = { locations : [] }
             <DestinationSearch callback={this.updateLocations}/>
           </View>
         </View>
-        <LocationSuggestions locations={this.state.locations}/>
-        <Map />
+        <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins}/>
+        <LocationSuggestions locations={this.state.locations} callback={this.addPin}/>
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
           <ConfirmButton/>
         </View>
