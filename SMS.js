@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import React, {useState, useEffect} from 'react';
 
-function SendSMS(phoneNumber){
+export function SendSMS(phoneNumber){
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
   
