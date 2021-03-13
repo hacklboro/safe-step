@@ -94,15 +94,6 @@ const LocationSuggestions = (props) => {
 
   return <ScrollView style={styles.suggestionsContainer}>{locationsObjs}</ScrollView>;
 };
-
-const onConfirm = () => {
-  return(
-    <View>
-      {console.log("RUNNING BUTTON FUNCTION")}
-    </View>
-  )
-}
-
 class Map extends Component { state = { mapPins: [] }
 
   constructor(props) {
@@ -116,6 +107,10 @@ class Map extends Component { state = { mapPins: [] }
       this.forceUpdate();
     } 
   };
+
+  getPin() {
+    return this.state.mapPins;  // return the pins on the map
+  }
 
   componentDidMount() {
     this.props.onRef(this)
@@ -142,9 +137,18 @@ class Map extends Component { state = { mapPins: [] }
 };
 
 class ConfirmButton extends Component {
-  render() {
+  confirm = (navigator) => {
+    let _destination = this.props.getDestinationCallback();
+    if (_destination.length == 0) {
+      alert("You need to select a destination!");
+      return;
+    }
+    navigator.navigate("duringroute", {destination: _destination[0]});
+  };
+
+  render( props ) {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={onConfirm}>
+              <TouchableOpacity style={styles.button} onPress={() => this.confirm(this.props.navigation)}>
                 <Text>Confirm</Text>
               </TouchableOpacity>
             </View>;
@@ -162,6 +166,10 @@ export class StartRoute extends Component {state = { locations : [], mapPins: []
   addPin = (lat, long) => {
     this.child.addPin(lat, long);
   }
+
+  getPin = () => {
+    return this.child.getPin();
+  };
 
   updateLocations(value) {
     getLocation()
@@ -195,7 +203,7 @@ export class StartRoute extends Component {state = { locations : [], mapPins: []
         <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins}/>
         <LocationSuggestions locations={this.state.locations} callback={this.addPin}/>
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
-          <ConfirmButton/>
+          <ConfirmButton {...this.props} getDestinationCallback={this.getPin}/>
         </View>
       </SafeAreaView>
       );
