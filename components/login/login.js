@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   Icon,
+  SafeAreaView,
 } from "react-native";
 import React, { Component } from "react";
 import Svg, {
@@ -25,6 +26,7 @@ export function Login( props ) {
 
   return (
     <View style={styles.Login}>
+      <SafeAreaView style={styles.Login2}> 
       <Animatable.View
         animation="pulse"
         duration={8000}
@@ -157,7 +159,7 @@ export function Login( props ) {
           viewBox="0 0 200 200"
           style={{
             position: "absolute",
-            top: 625,
+            top: 615,
             left: 315,
             width: "25%",
             height: "25%",
@@ -218,6 +220,7 @@ export function Login( props ) {
           </Defs>
         </Svg>
       </Animatable.View>
+      </SafeAreaView>
 
       <Text style={styles.logo}>SafeSteps</Text>
       <View style={styles.inputView}>
@@ -264,6 +267,7 @@ export function Login( props ) {
 export function Sign_Up( props ) {
   return (
     <View style={styles.Login}>
+      <SafeAreaView style={styles.Login2}>
       <Animatable.View
         animation="pulse"
         duration={8000}
@@ -396,7 +400,7 @@ export function Sign_Up( props ) {
           viewBox="0 0 200 200"
           style={{
             position: "absolute",
-            top: 625,
+            top: 612,
             left: 315,
             width: "25%",
             height: "25%",
@@ -457,6 +461,7 @@ export function Sign_Up( props ) {
           </Defs>
         </Svg>
       </Animatable.View>
+      </SafeAreaView>
       <Text style={styles.logo}>SafeSteps</Text>
 
       <View style={styles.inputView}>
@@ -511,7 +516,6 @@ export function Sign_Up( props ) {
         >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
-
   </View>
       
   );
@@ -525,6 +529,16 @@ const styles = StyleSheet.create({
   Login: {
     flex: 1,
     backgroundColor: "white",
+    zIndex: 0,
+  },
+  Login2: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    backgroundColor: "transparent",
     zIndex: 0,
   },
   bloba: {
