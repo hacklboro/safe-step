@@ -1,5 +1,6 @@
 import * as Location from 'expo-location';
 import React, {useState, useEffect} from 'react';
+import { TWILIO_KEY } from '@env'
 
 export function SendSMS(phoneNumber){
     const [location, setLocation] = useState(null);
@@ -51,7 +52,7 @@ export function SendSMS(phoneNumber){
       }
       
       const accountSid = "AC310bc9979e3f631c0b755fd3ae9ad711";
-      const authToken = "7cae1329d22dc7f789ffbf2855b90076";
+      const authToken = TWILIO_KEY;
       const client = require('twilio')(accountSid, authToken);
   
       client.messages
