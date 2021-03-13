@@ -88,6 +88,14 @@ LocationSuggestions = (props) => {
 
   return <ScrollView style={styles.suggestionsContainer}>{locationsObjs}</ScrollView>;
 };
+
+onConfirm = () => {
+  return(
+    <View>
+      {console.log("RUNNING BUTTON FUNCTION")}
+    </View>
+  )
+}
  
 class Map extends Component {
   render() {
@@ -105,7 +113,7 @@ class Map extends Component {
 class ConfirmButton extends Component {
   render() {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={() => {console.log("RUNNING BUTTON FUNCTION")}}>
+              <TouchableOpacity style={styles.button} onPress={onConfirm}>
                 <Text>Confirm</Text>
               </TouchableOpacity>
             </View>;
