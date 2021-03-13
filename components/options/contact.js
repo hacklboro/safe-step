@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, Text, View, Button, TextInput } from 'react-native';
 import React, { useState, useRef } from "react";
-import { openDatabase } from 'react-native-sqlite-storage';
+import { openDatabase } from 'expo-sqlite';
 import PhoneInput from "react-native-phone-number-input";
 
 export function SaveContact() {
