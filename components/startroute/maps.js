@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Button, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { getLocation } from "../location-management/location-manager.js"
 import { getNearbyLocations } from "./google_api_wrapper.js";
 import { render } from 'react-dom';
@@ -60,13 +60,21 @@ const styles = StyleSheet.create({
   },
   options: {
     position: 'absolute',
-    top: 0,
+    width: '11.5%',
+    height: 40,
+    top: 10,
     right: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#92E5FF',
+    borderBottomColor: '#000',
+    borderWidth: 1,
     borderTopLeftRadius: 50,
     borderTopRightRadius:50,
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
+  },
+  imagestyle: {
+    alignSelf: 'center',
+    marginTop: 6,
   },
 });
 
@@ -160,7 +168,7 @@ export class StartRoute extends Component {state = { locations : [] }
           <TouchableOpacity
             style={styles.options}
             onPress={() => this.props.navigation.navigate('options')}>
-            <Text style={styles.loginText}>Options</Text>
+            <Image style={styles.imagestyle} source={require('../../assets/Tune.png')} />
           </TouchableOpacity>
 
           <View alignItems={"center"}>
