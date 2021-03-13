@@ -7,10 +7,11 @@ import {
   View,
   Icon,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import React, { Component } from "react";
 import * as Animatable from "react-native-animatable";
-import { Blobs } from "./blobs.js" 
+import { Blobs } from "./blobs.js" ;
 import Svg, {
   Path,
   Circle,
@@ -20,8 +21,7 @@ import Svg, {
   Pattern,
   Image,
 } from "react-native-svg";
-import { styles } from "./style.js" 
-import {StartRoute} from '../startroute/maps.js'
+import { styles } from "./style.js" ;
 
 export function Login( props ) {
 
@@ -33,7 +33,7 @@ export function Login( props ) {
         <TextInput
           style={styles.innerInput}
           placeholder="Email."
-          onChangeText={(email) => setEmail(email)}
+          onChangeText={(email) => setEmail({email})}
           placeholderTextColor="#000"
         />
       </View>
@@ -43,7 +43,7 @@ export function Login( props ) {
           style={styles.innerInput}
           placeholder="Password."
           secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
+          onChangeText={(password) => this.setState({ password })}
           placeholderTextColor="#000"
         />
       </View>
@@ -69,6 +69,8 @@ export function Login( props ) {
     </View>
   );
 };
+
+
 
 export function Sign_Up( props ) {
   return (

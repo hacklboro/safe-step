@@ -7,17 +7,21 @@ import { Login, Sign_Up } from "./components/login/login.js"
 import {StartRoute, Map} from "./components/startroute/maps.js";
 import {Options} from "./components/options/options.js"
 
-const Stack = createStackNavigator(
+const Stack = createStackNavigator();
 
-);
+// import './components/globalVars.js'
 
 function App() {
+
   return (
-    <NavigationContainer>
+      <NavigationContainer>
       <Stack.Navigator initialRouteName="login">
         <Stack.Screen name="login" component={Login} options={{ title: 'Login' }} />
+
         <Stack.Screen name="signUp" component={Sign_Up} options={{ title: 'Sign Up' }} />
-        <Stack.Screen name="routes" component={StartRoute} options={{ title: 'Routes' }} />
+
+        <Stack.Screen name="routes" component={StartRoute} options={{ title: 'Routes', headerShown: false }} />
+
         <Stack.Screen name="options" component={Options} options={{ title: 'Options' }} />
       </Stack.Navigator>
     </NavigationContainer>

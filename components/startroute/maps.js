@@ -57,7 +57,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#e6e6e6",
     marginHorizontal: 5
-  }
+  },
+  options: {
+    position: 'absolute',
+    top: 0,
+    right: 15,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius:50,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+  },
 });
 
 const DestinationSearch = (props) => {
@@ -148,7 +158,7 @@ export class StartRoute extends Component {state = { locations : [] }
           <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Set Destination</Text>
           
           <TouchableOpacity
-            style={styles.loginBtn}
+            style={styles.options}
             onPress={() => this.props.navigation.navigate('options')}>
             <Text style={styles.loginText}>Options</Text>
           </TouchableOpacity>
