@@ -6,6 +6,9 @@ import { getLocation, generatePath } from "../location-management/location-manag
 import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_KEY } from '@env'
 import Polyline from "@mapbox/polyline";
+import { SMS } from "../messaging/SMS.js";
+import * as BackgroundFetch from "expo-background-fetch"
+import * as TaskManager from "expo-task-manager"
 
 const styles = StyleSheet.create({
   shadow: {
@@ -62,6 +65,59 @@ const styles = StyleSheet.create({
   }
 });
 
+function Intersect(startX,startY,endX,endY,locationX,locationY,radius) {
+
+  let m = ((endY) - (startY))/((endX)-(startX)); // Gradient of the line
+  let n = (startY) - (m * (startX)); // Y-intercept
+  // Setting up discriminant
+  let a = 1 + Math.pow((m),2);
+  let b = -(locationX) * 2 + (m * (n - (locationY))) * 2;
+  let c = Math.pow((locationX),2) + Math.pow((n - (locationY)),2) - Math.pow((radius),2);
+  
+  let d = Math.pow((b),2) - 4 * a * c; // Discriminant value
+  if (d >= 0) {
+      return true;
+  }
+  else{
+      return false;
+  }
+}
+
+function hasLeftCircle(currentLocation, points) {
+  for (let index = 0; index < points.length-1; index++) {
+    let startPoint = point[index];
+    let endPoint = point[index+1];
+    
+    if (!Intersect(startPoint[0], startPoint[1], endPoint[0], endPoint[1], currentLocation[0], currentLocation[1], 0.0003)) return false;
+  }
+  return true; // user has left the circle and therefore need to message
+}
+
+
+const TASK_NAME = "RUN_CHECKS"
+
+TaskManager.defineTask(TASK_NAME, (location, points) => {
+  try {
+    if (hasLeftCircle(location, points)) {
+      sendMessages(this.state.user_id);
+    }
+  } catch (err) {
+    return BackgroundFetch.Result.Failed
+  }
+});
+
+RegisterBackgroundTask = async (points) => {
+  try {
+    await BackgroundFetch.registerTaskAsync("RUN_CHECKS", {
+      minimumInterval: 30, // seconds,
+    })
+    console.log("Starting check loop");
+  } catch (err) {
+    console.log("Task Register failed:", err)
+  }
+}
+
+
 class Map extends Component { state = { mapPins: [], polyline: [], destination: []}
 
   constructor( props ) {
@@ -94,8 +150,6 @@ class Map extends Component { state = { mapPins: [], polyline: [], destination: 
   render() {
     let origin = {longitude: this.props.origin[0], latitude: this.props.origin[1]};
     let destination = {latitude: this.props.destination[0], longitude: this.props.destination[1]};
-    console.log(origin);
-    console.log(destination);
     return(
       <View style={styles.container}>
         <MapView style={styles.map} 
@@ -137,6 +191,10 @@ export class DuringRoute extends Component {state = { route: [], endPoint: [null
     getLocation().then(location => {
         generatePath(location, endPoint).then(path => this.setRoute(path)).catch(error => console.log(error))
     }).catch(error => alert(error));
+  }
+
+  componentDidMount() {
+    RegisterBackgroundTask();
   }
 
   setRoute = ( route )=> {

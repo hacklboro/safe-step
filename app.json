@@ -19,7 +19,8 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "To track your location"
+        "NSLocationWhenInUseUsageDescription": "To track your location",
+        "UIBackgroundModes": ["location", "fetch"]
       }
     },
     "android": {

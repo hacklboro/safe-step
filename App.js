@@ -1,11 +1,9 @@
 import { NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import React, { Component } from "react";
 import { Login, Sign_Up } from "./components/login/login.js"
 import {StartRoute, Map} from "./components/startroute/maps.js";
-import {Options} from "./components/options/options.js";
 import {DuringRoute} from "./components/duringroute/duringroute";
 import {SaveContact} from "./components/options/contact.js";
 
