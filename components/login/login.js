@@ -33,7 +33,7 @@ export function Login( props ) {
           style={styles.innerInput}
           placeholder="Email."
           onChangeText={(email) => setEmail(email)}
-          placeholderTextColor="#ddd"
+          placeholderTextColor="#000"
         />
       </View>
 
@@ -43,7 +43,7 @@ export function Login( props ) {
           placeholder="Password."
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
-          placeholderTextColor="#ddd"
+          placeholderTextColor="#000"
         />
       </View>
 
@@ -53,7 +53,7 @@ export function Login( props ) {
 
       <TouchableOpacity
         style={styles.loginBtn}
-        onPress={() => props.navigation.navigate('login')}
+        onPress={() => props.navigation.navigate('routes')}
       >
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
