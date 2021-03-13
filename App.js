@@ -12,6 +12,7 @@ function App() {
       <Stack.Navigator initialRouteName="login">
         <Stack.Screen name="login" component={Login} options={{ title: 'Login' }} />
         <Stack.Screen name="signUp" component={Sign_Up} options={{ title: 'Sign Up' }} />
+        <Stack.Screen name="maps" component={StartRoute} options={{ title: 'Routes' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
