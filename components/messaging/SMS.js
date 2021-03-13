@@ -51,9 +51,9 @@ export function SendSMS(phoneNumber){
         }
       }
       
-      const accountSid = "AC310bc9979e3f631c0b755fd3ae9ad711";
+      const twilioAccountSid = "AC310bc9979e3f631c0b755fd3ae9ad711";
       const authToken = TWILIO_KEY;
-      const client = require('twilio')(accountSid, authToken);
+      const client = (twilioAccountSid, authToken);
   
       client.messages
         .create({
