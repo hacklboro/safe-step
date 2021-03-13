@@ -9,8 +9,11 @@ const options = {
       padding: 20,
       borderRadius: 5,
       width: 220,
+      alignSelf: 'center',
+      marginTop: 5
     },
     text: {
+      alignSelf: 'center',
       fontSize: 14,
       color: '#FFF',
       marginLeft: 7,
