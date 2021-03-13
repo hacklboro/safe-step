@@ -1,10 +1,14 @@
 import React, { Component, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+<<<<<<< HEAD
+import { JourneyTime } from './stopwatch.js';
+=======
 import { getLocation, generatePath } from "../location-management/location-manager.js";
 import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_KEY } from '@env'
 import Polyline from "@mapbox/polyline";
+>>>>>>> 79103285f48898f83d227cedc3b712bd71fb8333
 
 const styles = StyleSheet.create({
   shadow: {
@@ -26,7 +30,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    backgroundColor: "#ff6961",
+    backgroundColor: "#7CC0FF",
     padding: 10,
     borderRadius: 15,
   },
@@ -116,8 +120,8 @@ class Map extends Component { state = { mapPins: [], polyline: [], destination: 
 class CancelButton extends Component {
   render() {
     return <View style={styles.container}>
-              <TouchableOpacity style={styles.button} onPress={() => console.log("cancel")}>
-                <Text>Cancel</Text>
+              <TouchableOpacity style={styles.button} onPress={() => console.log("Finish  Journey")}>
+                <Text>Finish Journey</Text>
               </TouchableOpacity>
             </View>;
   }
@@ -157,6 +161,8 @@ export class DuringRoute extends Component {state = { route: [], endPoint: [null
     return (
       <SafeAreaView style={styles.container}>
         <View height={100}> 
+        <Text style={{ textAlign: 'center'}} backgroundColor={"black"}>Current Journey</Text>
+        <JourneyTime style={styles.container}/>
         </View>
         <Map onRef={ref => (this.child = ref)} pins={this.state.mapPins} origin={this.state.origin} destination={this.state.endPoint} />
         <View style= {{position: 'absolute', bottom: "10%", width:"100%"}} alignItems={"center"}> 
