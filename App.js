@@ -1,11 +1,11 @@
 import { NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import React, { Component } from "react";
 import { Login, Sign_Up } from "./components/login/login.js"
 import {StartRoute, Map} from "./components/startroute/maps.js";
-import {Options} from "./components/options/options.js"
+import {DuringRoute} from "./components/duringroute/duringroute";
+import {SaveContact} from "./components/options/contact.js";
 
 const Stack = createStackNavigator();
 
@@ -19,10 +19,10 @@ function App() {
         <Stack.Screen name="login" component={Login} options={{ title: 'Login' }} />
 
         <Stack.Screen name="signUp" component={Sign_Up} options={{ title: 'Sign Up' }} />
-
         <Stack.Screen name="routes" component={StartRoute} options={{ title: 'Routes', headerShown: false }} />
-
-        <Stack.Screen name="options" component={Options} options={{ title: 'Options' }} />
+        <Stack.Screen name="routes" component={StartRoute} options={{ title: 'Routes' }} />
+        <Stack.Screen name="options" component={SaveContact} options={{ title: 'Contacts' }} />
+        <Stack.Screen name="duringroute" component={DuringRoute} options={{ title: 'During Route' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
